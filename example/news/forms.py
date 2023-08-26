@@ -10,7 +10,6 @@ class CreateNews(forms.ModelForm):
     class Meta:
         model = News
         fields = ['title', 'content', 'cat']
-        # fields = '__all__'
 
 
 class RegisterUserForm(UserCreationForm):

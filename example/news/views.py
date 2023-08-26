@@ -36,14 +36,6 @@ class NewsHome(ListView):
         return News.objects.filter(is_published=True)
 
 
-# class NewsCategory(ListView):
-#     model = News
-#     template_name = 'news/index.html'
-#     context_object_name = 'posts'
-#
-#     def get_queryset(self):
-#         return News.objects.filter(cat__id=self.kwargs['cat_id'], is_published=True)
-
 @login_required
 def about(request):
     return render(request, 'news/about.html', {'menu': menu, 'title': 'О сайте'})
