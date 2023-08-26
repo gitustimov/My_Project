@@ -1,0 +1,26 @@
+{% extends 'news/base.html' %}
+
+{% block content %}
+<h1>{{title}}</h1>
+<ul>
+    {% for p in posts %}
+    <li>
+        <h2>{{p.title}}</h2>
+        {{ p.time_create }}
+        {% autoescape on %}
+        <p>
+            {{p.content}}
+        </p>
+        <a href="{{ p.get_absolute_url }}">Читать</a>//
+        {% if perms.news.delete_news %}
+        <a href="{% url 'delnews' p.pk %}">Удалить</a>//
+        {% endif %}
+        {% if perms.news.change_news %}
+        <a href="{% url 'news_edit' p.pk %}">Обновить</a>//
+        {% endif %}
+        {% endautoescape %}
+        <hr>
+    </li>
+    {% endfor %}
+</ul>
+{% endblock %}
