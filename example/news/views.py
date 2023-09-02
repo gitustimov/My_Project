@@ -4,12 +4,15 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.mixins import PermissionRequiredMixin
 from django.contrib.auth.models import User
 from django.contrib.auth.views import LoginView
+from django.db.models import OuterRef, Exists
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound
 from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_protect
 from django.views.generic import CreateView, ListView, DetailView, DeleteView, UpdateView
 from .forms import *
 from .models import *
+
 
 menu = [
     {'title': 'О сайте', 'url_name': 'about'},
@@ -125,6 +128,7 @@ class RegisterUser(CreateView):
     model = User
     form_class = RegisterUserForm
     template_name = 'news/register.html'
+
     # success_url = reverse_lazy('login')
 
     def get_context_data(self, *, object_list=None, **kwargs):
@@ -136,7 +140,7 @@ class RegisterUser(CreateView):
 
     def form_valid(self, form):
         user = form.save()
-        login(self.request, user)
+        login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
         return redirect('home')
 
 
@@ -160,3 +164,25 @@ class LoginUser(LoginView):
 def logout_user(request):
     logout(request)
     return redirect('login')
+
+
+@login_required
+@csrf_protect
+def subscriptions(request):
+    if request.method == 'POST':
+        category_id = request.POST.get('category_id')
+        category = Category.objects.get(id=category_id)
+        action = request.POST.get('action')
+
+        if action == 'subscribe':
+            Subscription.objects.create(user=request.user, category=category)
+        elif action == 'unsubscribe':
+            Subscription.objects.filter(user=request.user, category=category,).delete()
+
+    categories_with_subscriptions = Category.objects.annotate(user_subscribed=Exists(Subscription.objects.filter(
+                user=request.user,
+                category=OuterRef('pk'),
+            )
+        )
+    ).order_by('name')
+    return render(request, 'news/subscriptions.html', {'categories': categories_with_subscriptions},)

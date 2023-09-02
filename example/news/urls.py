@@ -15,6 +15,5 @@ urlpatterns = [
     path('create/', AddNews.as_view(), name='create'),
     path('post/<int:pk>/delete/', NewsDeleteView.as_view(), name='delnews'),
     path('post/<int:pk>/update', UpdateNews.as_view(), name='news_edit'),
-
+    path('subscriptions/', subscriptions, name='subscriptions'),
 ]
-
