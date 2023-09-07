@@ -36,7 +36,7 @@ class ContactView(CreateView):
 
     def form_valid(self, form):
         form.save()
-        # send(form.instance.email)
+        send(form.instance.email)
         send_beat_email.delay(form.instance.email)
         return super().form_valid(form)
 
