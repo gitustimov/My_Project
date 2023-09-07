@@ -97,5 +97,13 @@ class Comment(models.Model):
 
 
 class Subscription(models.Model):
-    user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='subscriptions',)
-    category = models.ForeignKey(to='Category', on_delete=models.CASCADE, related_name='subscriptions',)
+    user = models.ForeignKey(to=User, on_delete=models.CASCADE, related_name='subscriptions', )
+    category = models.ForeignKey(to='Category', on_delete=models.CASCADE, related_name='subscriptions', )
+
+
+class ContSub(models.Model):
+    name = models.CharField(max_length=50)
+    email = models.EmailField(max_length=50)
+
+    def __str__(self):
+        return self.name

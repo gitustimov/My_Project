@@ -1,4 +1,0 @@
-Django~=4.2.3
-Pillow
-django-allauth~=0.54.0
-django-apscheduler

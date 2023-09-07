@@ -1,3 +1,7 @@
-from django.contrib import admin
+# from django.contrib import admin
+# from .models import ContSub
 
-# Register your models here.
+
+# @admin.register(ContSub)
+# class ContactAdmin(admin.ModelAdmin):
+#     list_display = ('name', 'email')

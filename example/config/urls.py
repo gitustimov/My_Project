@@ -26,6 +26,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('news.urls')),
     path('accounts/', include('allauth.urls')),
+    # path('subscr/', include('accounts.urls')),
 ]
 
 if settings.DEBUG:

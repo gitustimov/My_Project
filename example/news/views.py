@@ -8,19 +8,37 @@ from django.db.models import OuterRef, Exists
 from django.shortcuts import render, redirect
 from django.http import HttpResponse, HttpResponseNotFound
 from django.urls import reverse_lazy
+from django.views import View
 from django.views.decorators.csrf import csrf_protect
 from django.views.generic import CreateView, ListView, DetailView, DeleteView, UpdateView
 from .forms import *
 from .models import *
 
+from .forms import ContactForm
+from .service import send
+from .tasks import send_beat_email
 
 menu = [
     {'title': 'О сайте', 'url_name': 'about'},
     {'title': 'Добавить статью', 'url_name': 'create'},
     {'title': 'Обратная связь', 'url_name': 'contact'},
+    {'title': 'Подписка на еженедельные обновления', 'url_name': 'subscr'},
     # {'title': 'Категории', 'url_name': 'categories'},
     # {'title': 'Войти', 'url_name': 'login'},
 ]
+
+
+class ContactView(CreateView):
+    model = ContSub
+    form_class = ContactForm
+    template_name = 'news/subscr.html'
+    success_url = '/'
+
+    def form_valid(self, form):
+        form.save()
+        # send(form.instance.email)
+        send_beat_email.delay(form.instance.email)
+        return super().form_valid(form)
 
 
 class NewsHome(ListView):
@@ -177,12 +195,20 @@ def subscriptions(request):
         if action == 'subscribe':
             Subscription.objects.create(user=request.user, category=category)
         elif action == 'unsubscribe':
-            Subscription.objects.filter(user=request.user, category=category,).delete()
+            Subscription.objects.filter(user=request.user, category=category, ).delete()
 
     categories_with_subscriptions = Category.objects.annotate(user_subscribed=Exists(Subscription.objects.filter(
-                user=request.user,
-                category=OuterRef('pk'),
-            )
-        )
+        user=request.user,
+        category=OuterRef('pk')
+    )
+    )
     ).order_by('name')
-    return render(request, 'news/subscriptions.html', {'categories': categories_with_subscriptions},)
+    return render(request, 'news/subscriptions.html', {'categories': categories_with_subscriptions}, )
+
+# class NewsCategory(ListView):
+#     model = News
+#     template_name = 'news/index.html'
+#     context_object_name = 'posts'
+#
+#     def get_queryset(self):
+#         return News.objects.filter(cat__id=self.kwargs['cat_id'], is_published=True)

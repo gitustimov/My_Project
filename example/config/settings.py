@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'news',
+    'accounts',
     'allauth',
     'allauth.account',
     'allauth.socialaccount',
@@ -160,7 +161,7 @@ EMAIL_HOST = 'smtp.yandex.ru'
 EMAIL_PORT = 465
 EMAIL_HOST_USER = "udv0902@yandex.ru"
 EMAIL_HOST_PASSWORD = "xlwagncqrgvliglm"
-EMAIL_USE_TLS = False
+EMAIL_USE_TLS = True
 EMAIL_USE_SSL = True
 
 DEFAULT_FROM_EMAIL = "udv0902@yandex.ru"
@@ -173,3 +174,9 @@ MANAGERS = (
 ADMINS = (
     ('admin', 'admin@mail.ru'),
 )
+
+CELERY_BROKER_URL = 'redis://localhost:6379'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'

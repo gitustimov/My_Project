@@ -1,6 +1,14 @@
 from allauth.account.forms import SignupForm
 from django.contrib.auth.models import Group
 from django.core.mail import send_mail, EmailMultiAlternatives, mail_managers, mail_admins
+from django import forms
+# from .models import ContSub
+
+
+# class ContactForm(forms.ModelForm):
+#     class Meta:
+#         model = ContSub
+#         fields = '__all__'
 
 
 # class CustomSignupForm(SignupForm):
@@ -46,3 +54,4 @@ class CustomSignupForm(SignupForm):
             message=f'Пользователь {user.username} зарегистрировался на сайте.'
         )
         return user
+

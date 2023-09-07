@@ -5,8 +5,8 @@
     Создать новость
 </h1>
 <form method="POST">
-    {{ form.as_p}}
     {% csrf_token %}
+    {{ form.as_p}}
     <button type="submit">Создать</button>
 </form>
 {% endblock content %}

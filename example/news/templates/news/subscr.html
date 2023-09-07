@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Подписка на обновления</title>
+</head>
+<body>
+<h1>
+    <p>Подписка на еженедельные обновления</p>
+</h1>
+<from action="{% url 'subscr' %}" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Подписаться на обновления</button>
+</from>
+</body>
+</html>
